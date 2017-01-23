@@ -36,7 +36,7 @@ class Measurement(object):
         adjusted for temperature in Celcius.  The distance calculated
         is the median value of a sample of `sample_size` readings.
 
-        
+
         Speed of readings is a result of two variables.  The sample_size
         per reading and the sample_wait (interval between individual samples).
 
@@ -45,13 +45,13 @@ class Measurement(object):
 
         value = sensor.Measurement(trig_pin, echo_pin)
         r = value.raw_distance(sample_size=5)
-        
+
         Adjusting the interval between individual samples can also
         increase the speed of the reading.  Increasing the speed will also
         increase CPU usage.  Setting it too low will cause errors.  A default
         of sample_wait=0.1 is a good balance between speed and minimizing 
         CPU usage.  It is also a safe setting that should not cause errors.
-        
+
         e.g.
 
         r = value.raw_distance(sample_wait=0.03)
@@ -65,14 +65,14 @@ class Measurement(object):
             raise ValueError(
                 'Wrong Unit Type. Unit Must be imperial or metric')
 
-        speed_of_sound = 331.3 * math.sqrt(1+(self.temperature / 273.15))
+        speed_of_sound = 331.3 * math.sqrt(1 + (self.temperature / 273.15))
         sample = []
         # setup input/output pins
         GPIO.setwarnings(False)
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(self.trig_pin, GPIO.OUT)
         GPIO.setup(self.echo_pin, GPIO.IN)
-        
+
         for distance_reading in range(sample_size):
             GPIO.output(self.trig_pin, GPIO.LOW)
             time.sleep(sample_wait)
@@ -80,6 +80,7 @@ class Measurement(object):
             time.sleep(0.00001)
             GPIO.output(self.trig_pin, False)
             echo_status_counter = 1
+            sonar_signal_off = time.time()
             while GPIO.input(self.echo_pin) == 0:
                 if echo_status_counter < 1000:
                     sonar_signal_off = time.time()
